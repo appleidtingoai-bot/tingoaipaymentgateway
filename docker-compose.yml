@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=TingoAIPayments;Username=postgres;Password=postgres123
+      - Redis__ConnectionString=redis:6379
+      - GlobalPay__PublicKey=${GLOBALPAY_PUBLIC_KEY}
+      - GlobalPay__SecretKey=${GLOBALPAY_SECRET_KEY}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - tingoai-network
+
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=TingoAIPayments
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - tingoai-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - tingoai-network
+
+volumes:
+  postgres-data:
+
+networks:
+  tingoai-network:
+    driver: bridge

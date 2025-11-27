@@ -1,0 +1,14 @@
+.vs/
+.vscode/
+bin/
+obj/
+*.user
+*.suo
+logs/
+*.log
+.env
+appsettings.*.json
+!appsettings.json
+!appsettings.UK.json
+!appsettings.US.json
+!appsettings.NG.json

@@ -1,0 +1,19 @@
+[Unit]
+Description=TingoAI Payment Gateway API
+After=network.target
+
+[Service]
+Type=notify
+WorkingDirectory=/var/www/paymentgateway
+ExecStart=/usr/bin/dotnet /var/www/paymentgateway/TingoAI.PaymentGateway.API.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=tingoai-payment-gateway
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5000
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target

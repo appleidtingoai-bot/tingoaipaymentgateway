@@ -86,7 +86,10 @@ try
     app.UseMiddleware<RequestLoggingMiddleware>();
     app.UseMiddleware<RateLimitingMiddleware>();
 
-    if (app.Environment.IsDevelopment())
+    // Allow enabling Swagger in Production via configuration when needed for debugging.
+    // Default is false; set `EnableSwaggerInProduction=true` in appsettings or environment to enable.
+    var enableSwaggerInProd = builder.Configuration.GetValue<bool>("EnableSwaggerInProduction", false);
+    if (app.Environment.IsDevelopment() || enableSwaggerInProd)
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
@@ -96,7 +99,8 @@ try
             // serve the UI at /swagger (default) — change RoutePrefix if you want it at root
             c.RoutePrefix = "swagger";
         });
-        // Redirect root requests to the Swagger UI so GET / doesn't return 404 during development
+
+        // Redirect root requests to the Swagger UI so GET / doesn't return 404 when enabled
         app.MapGet("/", () => Results.Redirect("/swagger"));
     }
 

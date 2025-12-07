@@ -97,10 +97,6 @@ try
     var app = builder.Build();
 
     // Configure the HTTP request pipeline
-    app.UseMiddleware<ErrorHandlingMiddleware>();
-    app.UseMiddleware<RequestLoggingMiddleware>();
-    app.UseMiddleware<RateLimitingMiddleware>();
-
     // Allow enabling Swagger in Production via configuration when needed for debugging.
     // Default is false; set `EnableSwaggerInProduction=true` in appsettings or environment to enable.
     var enableSwaggerInProd = builder.Configuration.GetValue<bool>("EnableSwaggerInProduction", false);
@@ -119,6 +115,10 @@ try
         // Redirect root requests to the Swagger UI so GET / doesn't return 404 when enabled
         app.MapGet("/", () => Results.Redirect("/swagger"));
     }
+
+    app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseMiddleware<RequestLoggingMiddleware>();
+    app.UseMiddleware<RateLimitingMiddleware>();
 
     app.UseResponseCompression();
     app.UseCors("AllowAll");

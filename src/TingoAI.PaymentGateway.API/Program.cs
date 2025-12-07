@@ -104,6 +104,7 @@ try
     // Allow enabling Swagger in Production via configuration when needed for debugging.
     // Default is false; set `EnableSwaggerInProduction=true` in appsettings or environment to enable.
     var enableSwaggerInProd = builder.Configuration.GetValue<bool>("EnableSwaggerInProduction", false);
+    Log.Information("Environment: {Environment}, EnableSwaggerInProduction: {EnableSwagger}", app.Environment.EnvironmentName, enableSwaggerInProd);
     if (app.Environment.IsDevelopment() || enableSwaggerInProd)
     {
         app.UseSwagger();

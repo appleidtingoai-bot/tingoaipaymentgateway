@@ -6,6 +6,8 @@ namespace TingoAI.PaymentGateway.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ServiceFilter(typeof(TingoAI.PaymentGateway.API.Filters.BasicAuthFilter))]
+[TingoAI.PaymentGateway.API.Filters.RequireBasicAuth]
 public class PaymentController : ControllerBase
 {
     private readonly IPaymentService _paymentService;

@@ -29,6 +29,18 @@ try
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new() { Title = "TingoAI Payment Gateway API", Version = "v1" });
+
+        // Add Basic auth security definition so Swagger UI can send credentials to protected endpoints
+        c.AddSecurityDefinition("basic", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+            Scheme = "basic",
+            Description = "Basic HTTP Authentication"
+        });
+
+        // Apply operation filter to only add security requirement to operations with marker attribute
+        c.OperationFilter<TingoAI.PaymentGateway.API.Swagger.BasicAuthOperationFilter>();
+
         // Include XML comments if available for better documentation in Swagger UI
         try
         {
@@ -78,6 +90,9 @@ try
     {
         options.EnableForHttps = true;
     });
+
+    // Register BasicAuthFilter so it can be applied via ServiceFilter
+    builder.Services.AddScoped<TingoAI.PaymentGateway.API.Filters.BasicAuthFilter>();
 
     var app = builder.Build();
 

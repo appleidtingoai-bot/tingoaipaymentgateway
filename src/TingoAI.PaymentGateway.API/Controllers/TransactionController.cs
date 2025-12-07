@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using TingoAI.PaymentGateway.Application.DTOs;
 using TingoAI.PaymentGateway.Application.Interfaces;
+using TingoAI.PaymentGateway.API.Filters;
 
 namespace TingoAI.PaymentGateway.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ServiceFilter(typeof(BasicAuthFilter))]
+[RequireBasicAuth]
 public class TransactionController : ControllerBase
 {
     private readonly ITransactionService _transactionService;

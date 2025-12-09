@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.IO;
 using Serilog;
 using TingoAI.PaymentGateway.API.Middleware;
 using TingoAI.PaymentGateway.Application.Interfaces;
@@ -16,8 +17,45 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs/tingoai-payment-gateway-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
+// Load a local .env file (useful for local development). Copy `.env.example` -> `.env` and
+// the loader will set process environment variables before the host is built.
+void LoadDotEnv()
+{
+    try
+    {
+        var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+        if (!File.Exists(envPath)) return;
+
+        foreach (var raw in File.ReadAllLines(envPath))
+        {
+            var line = raw?.Trim();
+            if (string.IsNullOrEmpty(line) || line.StartsWith("#")) continue;
+
+            var idx = line.IndexOf('=');
+            if (idx <= 0) continue;
+
+            var key = line.Substring(0, idx).Trim();
+            var val = line.Substring(idx + 1).Trim();
+
+            if (val.Length >= 2 && ((val.StartsWith("\"") && val.EndsWith("\"")) || (val.StartsWith("'") && val.EndsWith("'"))))
+            {
+                val = val.Substring(1, val.Length - 2);
+            }
+
+            Environment.SetEnvironmentVariable(key, val);
+        }
+    }
+    catch
+    {
+        // don't block startup on env load errors
+    }
+}
+
 try
 {
+    // Load local .env into process environment (if present)
+    LoadDotEnv();
+
     var builder = WebApplication.CreateBuilder(args);
 
     // Add Serilog

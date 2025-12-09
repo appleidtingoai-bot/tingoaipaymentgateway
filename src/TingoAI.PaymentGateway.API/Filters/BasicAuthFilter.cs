@@ -47,7 +47,7 @@ namespace TingoAI.PaymentGateway.API.Filters
 
             var hasUser = !string.IsNullOrEmpty(user);
             var hasPass = !string.IsNullOrEmpty(pass);
-            _logger?.LogDebug("BasicAuth config present: user={HasUser}, pass={HasPass}", hasUser, hasPass);
+            _logger?.LogInformation("BasicAuth config present: user={HasUser}, pass={HasPass}", hasUser, hasPass);
 
             if (hasUser && hasPass)
             {

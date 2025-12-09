@@ -9,21 +9,12 @@ namespace TingoAI.PaymentGateway.Infrastructure.ExternalServices;
 public class GlobalPayClient : IGlobalPayClient
 {
     private readonly HttpClient _httpClient;
-    private readonly string _publicKey;
-    private readonly string _baseUrl;
-    private readonly ILogger<GlobalPayClient>? _logger;
+    private readonly ILogger<GlobalPayClient> _logger;
 
-    public GlobalPayClient(HttpClient httpClient, IConfiguration configuration, ILogger<GlobalPayClient>? logger = null)
+    public GlobalPayClient(HttpClient httpClient, ILogger<GlobalPayClient> logger)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _baseUrl = configuration["GlobalPay:BaseUrl"] ?? throw new ArgumentNullException("GlobalPay:BaseUrl");
-        _publicKey = configuration["GlobalPay:PublicKey"] ?? throw new ArgumentNullException("GlobalPay:PublicKey");
-        _logger = logger;
-        
-        // Ensure BaseAddress has a trailing slash so relative paths concatenate correctly
-        _httpClient.BaseAddress = new Uri(_baseUrl.TrimEnd('/') + "/");
-        _httpClient.DefaultRequestHeaders.Add("apikey", _publicKey);
-        _httpClient.DefaultRequestHeaders.Add("Language", "en");
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<GlobalPayPaymentResponse> GeneratePaymentLinkAsync(GlobalPayPaymentRequest request, CancellationToken cancellationToken = default)

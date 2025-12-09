@@ -64,8 +64,27 @@ try
     // Register Redis Cache
     builder.Services.AddSingleton<RedisCache>();
 
-    // Register HTTP Client for GlobalPay
-    builder.Services.AddHttpClient<IGlobalPayClient, GlobalPayClient>();
+    // Register HTTP Client for GlobalPay and configure it from IConfiguration
+    builder.Services.AddHttpClient<IGlobalPayClient, GlobalPayClient>((sp, client) =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
+        var baseUrl = config["GlobalPay:BaseUrl"];
+        var publicKey = config["GlobalPay:PublicKey"];
+
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            throw new InvalidOperationException("GlobalPay:BaseUrl is not configured");
+        }
+
+        if (string.IsNullOrWhiteSpace(publicKey))
+        {
+            throw new InvalidOperationException("GlobalPay:PublicKey is not configured");
+        }
+
+        client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+        client.DefaultRequestHeaders.Add("apikey", publicKey);
+        client.DefaultRequestHeaders.Add("Language", "en");
+    });
 
     // Register repositories
     builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();

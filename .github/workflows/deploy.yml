@@ -58,4 +58,4 @@ jobs:
       - name: Verify deployment
         run: |
           echo "Deployment completed successfully!"
-          echo "Application should be available at: https://tingopayment.tingoradio.ai"
+          echo "Application should be available at: https://tingoaipaymentgateway.tingosuperapp.ai"

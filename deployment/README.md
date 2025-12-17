@@ -28,7 +28,7 @@ sudo systemctl enable tingoai-payment-gateway
 Add these secrets to your GitHub repository:
 **Settings → Secrets and variables → Actions → New repository secret**
 
-1. **SSH_HOST** - Your server IP or domain (e.g., `tingopayment.tingoradio.ai` or `12.34.56.78`)
+1. **SSH_HOST** - Your server IP or domain (e.g., `tingoaipaymentgateway.tingosuperapp.ai` or `12.34.56.78`)
 2. **SSH_USER** - SSH username (e.g., `ubuntu`, `ec2-user`, or `root`)
 3. **SSH_KEY** - Your private SSH key (entire content of your `.pem` file)
 
@@ -47,7 +47,7 @@ If using Nginx as reverse proxy, create `/etc/nginx/sites-available/paymentgatew
 ```nginx
 server {
     listen 80;
-    server_name tingopayment.tingoradio.ai;
+    server_name tingoaipaymentgateway.tingosuperapp.ai;
 
     location / {
         proxy_pass http://localhost:5000;
@@ -73,7 +73,7 @@ sudo systemctl reload nginx
 
 ```bash
 sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d tingopayment.tingoradio.ai
+sudo certbot --nginx -d tingoaipaymentgateway.tingosuperapp.ai
 ```
 
 ## Deployment Commands
